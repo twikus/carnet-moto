@@ -95,6 +95,18 @@ Une facture importée tardivement se place automatiquement au bon endroit via ce
 ## Gestion des tickets Jira
 
 **Projet** : `SCRUM` sur https://axelduquelzar.atlassian.net
+**Auth API** : `axel.duquelzar@gmail.com` + token dans `.env` (`JIRA_API_TOKEN`)
+
+### Process obligatoire avant tout dev
+
+Pour chaque US, suivre ce process dans l'ordre :
+
+1. **Lire le ticket Jira** (GET `/rest/api/3/issue/SCRUM-XX`) et vérifier si un cadrage technique est déjà présent
+2. **Si pas de cadrage** : le rédiger (choix techniques, fichiers à créer, hors périmètre) et le **publier sur le ticket Jira** (PUT) avant de toucher au code
+3. **Si cadrage présent** : le valider avec l'utilisateur, puis démarrer le dev
+4. **Après dev + tests verts** : passer le ticket en statut "Done"
+
+> Ne jamais commencer à coder sans cadrage technique validé sur le ticket.
 
 Pour chaque US à implémenter, tu peux consulter le ticket Jira correspondant.
 Lorsqu'une US est terminée et les tests passent, mets le ticket en statut "Done".
