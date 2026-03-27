@@ -25,6 +25,21 @@ App web de suivi d'entretien moto personnelle.
 - app/Jobs/ → ProcessInvoiceJob
 - app/Console/Commands/ → CheckMaintenanceAlerts
 
+## Développement local
+
+Utiliser **Laravel Sail** pour tous les services locaux (PostgreSQL + Redis via Docker).
+
+```bash
+./vendor/bin/sail up -d       # démarrer
+./vendor/bin/sail down        # arrêter
+./vendor/bin/sail artisan ... # commandes artisan
+./vendor/bin/sail composer ... # composer
+```
+
+- `APP_ENV=local` → pas besoin de `--force` sur les migrations
+- DB : `pgsql:5432`, user `sail`, password `password`, base `carnet_moto`
+- Ne jamais lancer `php artisan` directement — toujours passer par `sail artisan`
+
 ## Schéma BDD
 
 Voir /docs/schema.md
