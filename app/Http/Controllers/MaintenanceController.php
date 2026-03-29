@@ -3,15 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreMaintenanceRequest;
+use App\Models\Maintenance;
 use App\Models\Motorcycle;
 use App\Services\MaintenanceService;
-use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class MaintenanceController extends Controller
 {
     public function __construct(private MaintenanceService $maintenanceService) {}
+
+    public function show(Maintenance $maintenance): Response
+    {
+        $motorcycle = Motorcycle::first();
+        $maintenance = $this->maintenanceService->findForMotorcycle($motorcycle, $maintenance);
+
+        return Inertia::render('Maintenance/Show', [
+            'motorcycle'  => $motorcycle,
+            'maintenance' => $maintenance,
+        ]);
+    }
 
     public function index(): Response
     {

@@ -40,4 +40,9 @@ class Maintenance extends Model
     {
         return $this->hasMany(MaintenanceItem::class);
     }
+
+    public function invoices(): HasMany
+    {
+        return $this->hasMany(Invoice::class);
+    }
 }
