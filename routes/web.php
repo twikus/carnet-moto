@@ -47,5 +47,6 @@ Route::middleware('auth')->group(function () {
         Route::post('/settings/maintenance-types', [MaintenanceTypeController::class, 'store'])->name('maintenance-types.store');
         Route::put('/settings/maintenance-types/{maintenanceType}', [MaintenanceTypeController::class, 'update'])->name('maintenance-types.update');
         Route::delete('/settings/maintenance-types/{maintenanceType}', [MaintenanceTypeController::class, 'destroy'])->name('maintenance-types.destroy');
+        Route::post('/settings/maintenance-types/{maintenanceType}/test-alert', [MaintenanceTypeController::class, 'testAlert'])->name('maintenance-types.test-alert');
     });
 });
