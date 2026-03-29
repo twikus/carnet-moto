@@ -28,6 +28,12 @@ class Motorcycle extends Model
         'initial_mileage' => 'integer',
     ];
 
+    public function getCurrentMileageAttribute(): int
+    {
+        return $this->mileageLogs()->latest('logged_at')->value('mileage')
+            ?? $this->initial_mileage;
+    }
+
     public function maintenances(): HasMany
     {
         return $this->hasMany(Maintenance::class);

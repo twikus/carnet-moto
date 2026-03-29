@@ -2,16 +2,16 @@
     <div class="min-h-screen bg-gray-50 pb-8">
         <!-- Header -->
         <div class="bg-white shadow-sm px-4 py-4 flex items-center gap-3">
-            <a :href="route('dashboard')" class="text-gray-400 hover:text-gray-600 p-1">
+            <a :href="route('maintenance.show', maintenance.id)" class="text-gray-400 hover:text-gray-600 p-1">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                 </svg>
             </a>
-            <h1 class="text-lg font-bold text-gray-900">Nouvelle intervention</h1>
+            <h1 class="text-lg font-bold text-gray-900">Modifier l'intervention</h1>
         </div>
 
         <form @submit.prevent="submit" class="px-4 mt-6 space-y-4 max-w-2xl mx-auto">
-            <!-- Date -->
+            <!-- Infos principales -->
             <div class="bg-white rounded-xl shadow p-5 space-y-4">
                 <div>
                     <label class="block text-xs text-gray-400 uppercase tracking-wide mb-1">Date *</label>
@@ -23,7 +23,7 @@
 
                 <div>
                     <label class="block text-xs text-gray-400 uppercase tracking-wide mb-1">Kilométrage *</label>
-                    <input v-model="form.mileage" type="number" min="0" placeholder="ex: 12500"
+                    <input v-model="form.mileage" type="number" min="0"
                         class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
                         :class="{ 'border-red-400': form.errors.mileage }" />
                     <p v-if="form.errors.mileage" class="text-xs text-red-500 mt-1">{{ form.errors.mileage }}</p>
@@ -31,13 +31,13 @@
 
                 <div>
                     <label class="block text-xs text-gray-400 uppercase tracking-wide mb-1">Garage</label>
-                    <input v-model="form.garage" type="text" placeholder="ex: Moto Shop Paris"
+                    <input v-model="form.garage" type="text"
                         class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400" />
                 </div>
 
                 <div>
                     <label class="block text-xs text-gray-400 uppercase tracking-wide mb-1">Notes</label>
-                    <textarea v-model="form.notes" rows="2" placeholder="Observations, remarques..."
+                    <textarea v-model="form.notes" rows="2"
                         class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 resize-none"></textarea>
                 </div>
             </div>
@@ -80,10 +80,9 @@
                 </label>
             </div>
 
-            <!-- Submit -->
             <button type="submit" :disabled="form.processing"
                 class="w-full bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white font-medium py-3 px-4 rounded-xl text-sm transition-colors">
-                Enregistrer l'intervention
+                Enregistrer les modifications
             </button>
         </form>
     </div>
@@ -94,16 +93,23 @@ import { useForm } from '@inertiajs/vue3'
 import { useMileageCheck } from '@/composables/useMileageCheck'
 
 const props = defineProps({
+    motorcycle: Object,
+    maintenance: Object,
     currentMileage: Number,
 })
 
 const form = useForm({
-    performed_at:        '',
-    mileage:             '',
-    garage:              '',
-    notes:               '',
-    items:               [{ label: '', amount: '' }],
-    update_mileage_log:  false,
+    performed_at: props.maintenance.performed_at
+        ? props.maintenance.performed_at.substring(0, 10)
+        : '',
+    mileage: props.maintenance.mileage,
+    garage:  props.maintenance.garage ?? '',
+    notes:   props.maintenance.notes ?? '',
+    items: props.maintenance.maintenance_items.map(item => ({
+        label:  item.label,
+        amount: item.amount ?? '',
+    })),
+    update_mileage_log: false,
 })
 
 const { showMileageProposal } = useMileageCheck(form, props.currentMileage)
@@ -117,6 +123,6 @@ function removeItem(index) {
 }
 
 function submit() {
-    form.post(route('maintenance.store'))
+    form.put(route('maintenance.update', props.maintenance.id))
 }
 </script>

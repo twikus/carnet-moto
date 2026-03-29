@@ -11,8 +11,8 @@
                 <h1 class="text-lg font-bold text-gray-900">Détail de l'intervention</h1>
             </div>
             <div class="flex gap-2">
-                <a href="#"
-                    class="text-sm text-orange-500 hover:text-orange-700 font-medium px-3 py-1.5 rounded-lg border border-orange-200 hover:border-orange-400 transition-colors opacity-50 pointer-events-none">
+                <a :href="route('maintenance.edit', maintenance.id)"
+                    class="text-sm text-orange-500 hover:text-orange-700 font-medium px-3 py-1.5 rounded-lg border border-orange-200 hover:border-orange-400 transition-colors">
                     Modifier
                 </a>
                 <button @click="confirmDelete"
@@ -80,7 +80,7 @@
 
         <!-- Modal confirmation suppression -->
         <div v-if="showDeleteModal"
-            class="fixed inset-0 bg-black/50 flex items-end justify-center z-50 p-4">
+            class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
             <div class="bg-white rounded-2xl p-6 w-full max-w-sm">
                 <h2 class="text-base font-bold text-gray-900 mb-2">Supprimer l'intervention ?</h2>
                 <p class="text-sm text-gray-500 mb-5">Cette action est irréversible.</p>
@@ -121,7 +121,8 @@ function confirmDelete() {
 }
 
 function deleteConfirmed() {
-    // Route maintenance.destroy disponible avec SCRUM-17
-    showDeleteModal.value = false
+    deleteForm.delete(route('maintenance.destroy', props.maintenance.id), {
+        onSuccess: () => showDeleteModal.value = false,
+    })
 }
 </script>

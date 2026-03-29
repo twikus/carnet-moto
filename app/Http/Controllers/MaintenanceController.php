@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreMaintenanceRequest;
+use App\Http\Requests\UpdateMaintenanceRequest;
 use App\Models\Maintenance;
 use App\Models\Motorcycle;
 use App\Services\MaintenanceService;
@@ -24,6 +25,32 @@ class MaintenanceController extends Controller
         ]);
     }
 
+    public function edit(Maintenance $maintenance): Response
+    {
+        $motorcycle = Motorcycle::first();
+        $maintenance->load('maintenanceItems');
+
+        return Inertia::render('Maintenance/Edit', [
+            'motorcycle'     => $motorcycle,
+            'maintenance'    => $maintenance,
+            'currentMileage' => $motorcycle->current_mileage,
+        ]);
+    }
+
+    public function update(UpdateMaintenanceRequest $request, Maintenance $maintenance)
+    {
+        $this->maintenanceService->update($maintenance, $request->validated());
+
+        return redirect()->route('maintenance.show', $maintenance);
+    }
+
+    public function destroy(Maintenance $maintenance)
+    {
+        $this->maintenanceService->delete($maintenance);
+
+        return redirect()->route('maintenance.index');
+    }
+
     public function index(): Response
     {
         $motorcycle = Motorcycle::first();
@@ -37,7 +64,11 @@ class MaintenanceController extends Controller
 
     public function create(): Response
     {
-        return Inertia::render('Maintenance/Create');
+        $motorcycle = Motorcycle::first();
+
+        return Inertia::render('Maintenance/Create', [
+            'currentMileage' => $motorcycle->current_mileage,
+        ]);
     }
 
     public function store(StoreMaintenanceRequest $request)

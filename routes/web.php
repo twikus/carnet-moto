@@ -31,5 +31,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/maintenances/create', [MaintenanceController::class, 'create'])->name('maintenance.create');
         Route::post('/maintenances', [MaintenanceController::class, 'store'])->name('maintenance.store');
         Route::get('/maintenances/{maintenance}', [MaintenanceController::class, 'show'])->name('maintenance.show');
+        Route::get('/maintenances/{maintenance}/edit', [MaintenanceController::class, 'edit'])->name('maintenance.edit');
+        Route::put('/maintenances/{maintenance}', [MaintenanceController::class, 'update'])->name('maintenance.update');
+        Route::delete('/maintenances/{maintenance}', [MaintenanceController::class, 'destroy'])->name('maintenance.destroy');
     });
 });
