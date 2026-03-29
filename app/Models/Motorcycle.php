@@ -21,6 +21,7 @@ class Motorcycle extends Model
         'plate',
         'initial_mileage',
         'photo_path',
+        'discord_webhook_url',
     ];
 
     protected $casts = [

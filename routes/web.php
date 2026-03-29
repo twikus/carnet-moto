@@ -3,7 +3,9 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MaintenanceController;
+use App\Http\Controllers\MaintenanceTypeController;
 use App\Http\Controllers\MotorcycleController;
+use App\Http\Controllers\SettingsController;
 use App\Http\Middleware\EnsureMotorcycleExists;
 use Illuminate\Support\Facades\Route;
 
@@ -34,5 +36,16 @@ Route::middleware('auth')->group(function () {
         Route::get('/maintenances/{maintenance}/edit', [MaintenanceController::class, 'edit'])->name('maintenance.edit');
         Route::put('/maintenances/{maintenance}', [MaintenanceController::class, 'update'])->name('maintenance.update');
         Route::delete('/maintenances/{maintenance}', [MaintenanceController::class, 'destroy'])->name('maintenance.destroy');
+
+        // Settings
+        Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
+        Route::put('/settings/motorcycle', [SettingsController::class, 'updateMotorcycle'])->name('settings.motorcycle');
+        Route::put('/settings/discord', [SettingsController::class, 'updateDiscord'])->name('settings.discord');
+        Route::post('/settings/discord/test', [SettingsController::class, 'testDiscord'])->name('settings.discord.test');
+
+        // Maintenance types
+        Route::post('/settings/maintenance-types', [MaintenanceTypeController::class, 'store'])->name('maintenance-types.store');
+        Route::put('/settings/maintenance-types/{maintenanceType}', [MaintenanceTypeController::class, 'update'])->name('maintenance-types.update');
+        Route::delete('/settings/maintenance-types/{maintenanceType}', [MaintenanceTypeController::class, 'destroy'])->name('maintenance-types.destroy');
     });
 });
