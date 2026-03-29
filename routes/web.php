@@ -1,7 +1,38 @@
 <?php
 
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\MaintenanceController;
+use App\Http\Controllers\MotorcycleController;
+use App\Http\Middleware\EnsureMotorcycleExists;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
+// Auth
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [LoginController::class, 'show'])->name('login');
+    Route::post('/login', [LoginController::class, 'store']);
+});
+
+Route::post('/logout', [LoginController::class, 'destroy'])->middleware('auth')->name('logout');
+
+// App
+Route::middleware('auth')->group(function () {
+    // Configuration moto (accessible même sans moto existante)
+    Route::get('/motorcycle/create', [MotorcycleController::class, 'create'])->name('motorcycle.create');
+    Route::post('/motorcycle', [MotorcycleController::class, 'store'])->name('motorcycle.store');
+    Route::get('/motorcycle/{motorcycle}/edit', [MotorcycleController::class, 'edit'])->name('motorcycle.edit');
+    Route::put('/motorcycle/{motorcycle}', [MotorcycleController::class, 'update'])->name('motorcycle.update');
+
+    // Routes protégées : nécessitent une moto configurée
+    Route::middleware(EnsureMotorcycleExists::class)->group(function () {
+        Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+
+        Route::get('/maintenances', [MaintenanceController::class, 'index'])->name('maintenance.index');
+        Route::get('/maintenances/create', [MaintenanceController::class, 'create'])->name('maintenance.create');
+        Route::post('/maintenances', [MaintenanceController::class, 'store'])->name('maintenance.store');
+        Route::get('/maintenances/{maintenance}', [MaintenanceController::class, 'show'])->name('maintenance.show');
+        Route::get('/maintenances/{maintenance}/edit', [MaintenanceController::class, 'edit'])->name('maintenance.edit');
+        Route::put('/maintenances/{maintenance}', [MaintenanceController::class, 'update'])->name('maintenance.update');
+        Route::delete('/maintenances/{maintenance}', [MaintenanceController::class, 'destroy'])->name('maintenance.destroy');
+    });
 });
