@@ -1,10 +1,10 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MotorcycleController;
 use App\Http\Middleware\EnsureMotorcycleExists;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 // Auth
 Route::middleware('guest')->group(function () {
@@ -24,6 +24,6 @@ Route::middleware('auth')->group(function () {
 
     // Routes protégées : nécessitent une moto configurée
     Route::middleware(EnsureMotorcycleExists::class)->group(function () {
-        Route::get('/', fn () => Inertia::render('Dashboard'))->name('dashboard');
+        Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     });
 });
