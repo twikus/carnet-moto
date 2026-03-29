@@ -27,6 +27,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware(EnsureMotorcycleExists::class)->group(function () {
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
+        Route::get('/maintenances', [MaintenanceController::class, 'index'])->name('maintenance.index');
         Route::get('/maintenances/create', [MaintenanceController::class, 'create'])->name('maintenance.create');
         Route::post('/maintenances', [MaintenanceController::class, 'store'])->name('maintenance.store');
     });
