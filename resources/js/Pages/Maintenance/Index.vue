@@ -49,8 +49,8 @@
                             </p>
                         </div>
                         <div class="text-right">
-                            <p v-if="totalAmount(maintenance)" class="text-sm font-semibold text-gray-900">
-                                {{ totalAmount(maintenance) }} €
+                            <p v-if="totalAmount(maintenance.maintenance_items)" class="text-sm font-semibold text-gray-900">
+                                {{ totalAmount(maintenance.maintenance_items) }} €
                             </p>
                         </div>
                     </div>
