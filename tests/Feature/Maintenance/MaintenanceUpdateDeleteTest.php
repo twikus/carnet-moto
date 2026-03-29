@@ -87,3 +87,43 @@ test('la suppression est un soft delete', function () {
 
     expect(Maintenance::withTrashed()->find($maintenance->id)->deleted_at)->not->toBeNull();
 });
+
+test('la modification échoue si le km est incohérent avec une intervention antérieure', function () {
+    $motorcycle = Motorcycle::factory()->create();
+
+    Maintenance::factory()->for($motorcycle)->create([
+        'performed_at' => '2026-03-27',
+        'mileage'      => 27800,
+    ]);
+
+    $maintenance = Maintenance::factory()->for($motorcycle)->create([
+        'performed_at' => '2026-03-29',
+        'mileage'      => 28000,
+    ]);
+    MaintenanceItem::factory()->for($maintenance)->create();
+
+    $this->actingAs(User::factory()->create())
+        ->put(route('maintenance.update', $maintenance), [
+            'performed_at' => '2026-03-29',
+            'mileage'      => 26700,
+            'items'        => [['label' => 'Vidange', 'amount' => null]],
+        ])
+        ->assertSessionHasErrors(['mileage']);
+});
+
+test('la modification ne se bloque pas sur sa propre valeur', function () {
+    $motorcycle = Motorcycle::factory()->create();
+    $maintenance = Maintenance::factory()->for($motorcycle)->create([
+        'performed_at' => '2026-03-27',
+        'mileage'      => 27800,
+    ]);
+    MaintenanceItem::factory()->for($maintenance)->create();
+
+    $this->actingAs(User::factory()->create())
+        ->put(route('maintenance.update', $maintenance), [
+            'performed_at' => '2026-03-27',
+            'mileage'      => 27800,
+            'items'        => [['label' => 'Vidange', 'amount' => null]],
+        ])
+        ->assertRedirect(route('maintenance.show', $maintenance));
+});

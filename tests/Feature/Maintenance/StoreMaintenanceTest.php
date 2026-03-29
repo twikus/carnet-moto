@@ -86,3 +86,51 @@ test('le montant de l\'item peut être nul', function () {
 
     expect(MaintenanceItem::first()->amount)->toBeNull();
 });
+
+test('le kilométrage est refusé si inférieur à une intervention antérieure', function () {
+    $motorcycle = Motorcycle::factory()->create();
+    Maintenance::factory()->for($motorcycle)->create([
+        'performed_at' => '2026-03-27',
+        'mileage'      => 27800,
+    ]);
+
+    $this->actingAs(User::factory()->create())
+        ->post(route('maintenance.store'), [
+            'performed_at' => '2026-03-29',
+            'mileage'      => 26700,
+            'items'        => [['label' => 'Vidange', 'amount' => null]],
+        ])
+        ->assertSessionHasErrors(['mileage']);
+});
+
+test('le kilométrage est refusé si supérieur à une intervention postérieure', function () {
+    $motorcycle = Motorcycle::factory()->create();
+    Maintenance::factory()->for($motorcycle)->create([
+        'performed_at' => '2026-03-29',
+        'mileage'      => 26700,
+    ]);
+
+    $this->actingAs(User::factory()->create())
+        ->post(route('maintenance.store'), [
+            'performed_at' => '2026-03-27',
+            'mileage'      => 27800,
+            'items'        => [['label' => 'Vidange', 'amount' => null]],
+        ])
+        ->assertSessionHasErrors(['mileage']);
+});
+
+test('deux interventions le même jour avec des km différents sont acceptées', function () {
+    $motorcycle = Motorcycle::factory()->create();
+    Maintenance::factory()->for($motorcycle)->create([
+        'performed_at' => '2026-03-27',
+        'mileage'      => 27800,
+    ]);
+
+    $this->actingAs(User::factory()->create())
+        ->post(route('maintenance.store'), [
+            'performed_at' => '2026-03-27',
+            'mileage'      => 27700,
+            'items'        => [['label' => 'Vidange', 'amount' => null]],
+        ])
+        ->assertRedirect(route('dashboard'));
+});
