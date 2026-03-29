@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\MotorcycleController;
 use App\Http\Middleware\EnsureMotorcycleExists;
 use Illuminate\Support\Facades\Route;
@@ -25,5 +26,8 @@ Route::middleware('auth')->group(function () {
     // Routes protégées : nécessitent une moto configurée
     Route::middleware(EnsureMotorcycleExists::class)->group(function () {
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+
+        Route::get('/maintenances/create', [MaintenanceController::class, 'create'])->name('maintenance.create');
+        Route::post('/maintenances', [MaintenanceController::class, 'store'])->name('maintenance.store');
     });
 });
