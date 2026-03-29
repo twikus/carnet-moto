@@ -9,6 +9,13 @@ use Illuminate\Support\Facades\DB;
 
 class MaintenanceService
 {
+    public function findForMotorcycle(Motorcycle $motorcycle, Maintenance $maintenance): Maintenance
+    {
+        return $motorcycle->maintenances()
+            ->with('maintenanceItems.maintenanceType', 'invoices')
+            ->findOrFail($maintenance->id);
+    }
+
     public function listForMotorcycle(Motorcycle $motorcycle): Collection
     {
         return $motorcycle->maintenances()

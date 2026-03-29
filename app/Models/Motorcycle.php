@@ -42,4 +42,9 @@ class Motorcycle extends Model
     {
         return $this->hasMany(MileageLog::class);
     }
+
+    public function alertLogs(): HasMany
+    {
+        return $this->hasMany(AlertLog::class);
+    }
 }

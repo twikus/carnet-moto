@@ -30,5 +30,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/maintenances', [MaintenanceController::class, 'index'])->name('maintenance.index');
         Route::get('/maintenances/create', [MaintenanceController::class, 'create'])->name('maintenance.create');
         Route::post('/maintenances', [MaintenanceController::class, 'store'])->name('maintenance.store');
+        Route::get('/maintenances/{maintenance}', [MaintenanceController::class, 'show'])->name('maintenance.show');
     });
 });

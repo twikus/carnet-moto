@@ -35,8 +35,9 @@
 
             <!-- Liste -->
             <div v-else class="space-y-3">
-                <div v-for="maintenance in maintenances" :key="maintenance.id"
-                    class="bg-white rounded-xl shadow p-4">
+                <a v-for="maintenance in maintenances" :key="maintenance.id"
+                    :href="route('maintenance.show', maintenance.id)"
+                    class="bg-white rounded-xl shadow p-4 block hover:shadow-md transition-shadow">
                     <!-- En-tête de la card -->
                     <div class="flex items-start justify-between mb-3">
                         <div>
@@ -63,7 +64,7 @@
                             <span v-if="item.amount" class="text-gray-400">{{ Number(item.amount).toFixed(2) }} €</span>
                         </li>
                     </ul>
-                </div>
+                </a>
             </div>
         </div>
     </div>
