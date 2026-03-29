@@ -41,4 +41,9 @@ class MaintenanceType extends Model
     {
         return $this->hasMany(MaintenanceItem::class);
     }
+
+    public function alertLogs(): HasMany
+    {
+        return $this->hasMany(AlertLog::class);
+    }
 }
