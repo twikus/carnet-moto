@@ -6,11 +6,12 @@ use App\Http\Requests\StoreMaintenanceTypeRequest;
 use App\Http\Requests\UpdateMaintenanceTypeRequest;
 use App\Models\MaintenanceType;
 use App\Models\Motorcycle;
-use Illuminate\Http\Client\ConnectionException;
-use Illuminate\Support\Facades\Http;
+use App\Services\DiscordService;
 
 class MaintenanceTypeController extends Controller
 {
+    public function __construct(private DiscordService $discordService) {}
+
     public function store(StoreMaintenanceTypeRequest $request)
     {
         Motorcycle::first()->maintenanceTypes()->create($request->validated());
@@ -57,16 +58,10 @@ class MaintenanceTypeController extends Controller
             $lines[] = "⚠️ Seuil d'alerte : {$maintenanceType->alert_threshold_days} jour(s) avant échéance";
         }
 
-        try {
-            $response = Http::post($url, ['content' => implode("\n", $lines)]);
+        $ok = $this->discordService->send($url, implode("\n", $lines));
 
-            if ($response->successful()) {
-                return back()->with('success', "Alerte test envoyée pour « {$maintenanceType->name} ».");
-            }
-
-            return back()->with('error', 'Erreur Discord : ' . $response->status());
-        } catch (ConnectionException) {
-            return back()->with('error', 'Impossible de joindre le webhook Discord.');
-        }
+        return $ok
+            ? back()->with('success', "Alerte test envoyée pour « {$maintenanceType->name} ».")
+            : back()->with('error', 'Impossible de joindre le webhook Discord.');
     }
 }

@@ -5,21 +5,23 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UpdateDiscordRequest;
 use App\Http\Requests\UpdateMotorcycleRequest;
 use App\Models\Motorcycle;
+use App\Services\DiscordService;
 use App\Services\MotorcycleService;
-use Illuminate\Http\Client\ConnectionException;
-use Illuminate\Support\Facades\Http;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class SettingsController extends Controller
 {
-    public function __construct(private MotorcycleService $motorcycleService) {}
+    public function __construct(
+        private MotorcycleService $motorcycleService,
+        private DiscordService $discordService,
+    ) {}
 
     public function index(): Response
     {
         $motorcycle = Motorcycle::first();
 
-        $apiKey = config('services.anthropic.key') ?? env('ANTHROPIC_API_KEY', '');
+        $apiKey    = config('services.anthropic.key') ?? env('ANTHROPIC_API_KEY', '');
         $maskedKey = $apiKey ? substr($apiKey, 0, 10) . '...' . substr($apiKey, -4) : null;
 
         return Inertia::render('Settings/Index', [
@@ -54,18 +56,10 @@ class SettingsController extends Controller
             return back()->with('error', 'Aucun webhook Discord configuré.');
         }
 
-        try {
-            $response = Http::post($url, [
-                'content' => '✅ Test webhook Carnet Moto — la connexion fonctionne !',
-            ]);
+        $ok = $this->discordService->send($url, '✅ Test webhook Carnet Moto — la connexion fonctionne !');
 
-            if ($response->successful()) {
-                return back()->with('success', 'Message de test envoyé sur Discord.');
-            }
-
-            return back()->with('error', 'Erreur Discord : ' . $response->status());
-        } catch (ConnectionException) {
-            return back()->with('error', 'Impossible de joindre le webhook Discord.');
-        }
+        return $ok
+            ? back()->with('success', 'Message de test envoyé sur Discord.')
+            : back()->with('error', 'Impossible de joindre le webhook Discord.');
     }
 }
