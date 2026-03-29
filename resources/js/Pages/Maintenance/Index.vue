@@ -70,23 +70,12 @@
 </template>
 
 <script setup>
+import { useFormatters } from '@/composables/useFormatters'
+
 const props = defineProps({
     motorcycle: Object,
     maintenances: Array,
 })
 
-function formatDate(dateStr) {
-    return new Date(dateStr).toLocaleDateString('fr-FR', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-    })
-}
-
-function totalAmount(maintenance) {
-    const total = maintenance.maintenance_items.reduce((sum, item) => {
-        return sum + (item.amount ? Number(item.amount) : 0)
-    }, 0)
-    return total > 0 ? total.toFixed(2) : null
-}
+const { formatDate, totalAmount } = useFormatters()
 </script>
