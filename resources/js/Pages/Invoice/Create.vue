@@ -15,9 +15,8 @@
             <div class="bg-white rounded-xl shadow p-5">
                 <p class="text-xs text-gray-400 uppercase tracking-wide mb-3">Photo de la facture</p>
 
-                <!-- Preview ou zone de sélection -->
-                <div v-if="preview"
-                    class="relative mb-4">
+                <!-- Preview -->
+                <div v-if="preview" class="relative mb-4">
                     <img :src="preview" alt="Aperçu de la facture"
                         class="w-full rounded-lg object-contain max-h-80 bg-gray-100" />
                     <button type="button" @click="clearPhoto"
@@ -28,14 +27,25 @@
                     </button>
                 </div>
 
+                <!-- Zone de dépôt -->
                 <label v-if="!preview" for="photo-input"
-                    class="flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-xl p-8 cursor-pointer hover:border-orange-300 hover:bg-orange-50 transition-colors"
-                    :class="{ 'border-red-400 bg-red-50': form.errors.photo }">
-                    <svg class="w-10 h-10 text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    class="flex flex-col items-center justify-center border-2 border-dashed rounded-xl p-8 cursor-pointer transition-colors"
+                    :class="isDragging
+                        ? 'border-orange-400 bg-orange-50'
+                        : form.errors.photo
+                            ? 'border-red-400 bg-red-50'
+                            : 'border-gray-200 hover:border-orange-300 hover:bg-orange-50'"
+                    @dragover.prevent="isDragging = true"
+                    @dragleave.prevent="isDragging = false"
+                    @drop.prevent="onDrop">
+                    <svg class="w-10 h-10 mb-3 transition-colors" :class="isDragging ? 'text-orange-400' : 'text-gray-300'"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                             d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
-                    <span class="text-sm font-medium text-gray-600 mb-1">Appuyer pour prendre une photo</span>
+                    <span class="text-sm font-medium text-gray-600 mb-1">
+                        {{ isDragging ? 'Déposer la photo ici' : 'Glisser-déposer ou cliquer pour choisir' }}
+                    </span>
                     <span class="text-xs text-gray-400">JPG ou PNG · compressé automatiquement</span>
                 </label>
 
@@ -80,13 +90,13 @@ import { useForm } from '@inertiajs/vue3'
 
 const preview = ref(null)
 const fileInput = ref(null)
+const isDragging = ref(false)
 
 const form = useForm({
     photo: null,
 })
 
-function onFileChange(event) {
-    const file = event.target.files[0]
+function loadFile(file) {
     if (!file) return
 
     form.photo = file
@@ -94,6 +104,15 @@ function onFileChange(event) {
     const reader = new FileReader()
     reader.onload = (e) => { preview.value = e.target.result }
     reader.readAsDataURL(file)
+}
+
+function onFileChange(event) {
+    loadFile(event.target.files[0])
+}
+
+function onDrop(event) {
+    isDragging.value = false
+    loadFile(event.dataTransfer.files[0])
 }
 
 function clearPhoto() {
