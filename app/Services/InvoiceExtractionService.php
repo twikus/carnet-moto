@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Ai\Agents\InvoiceExtractorAgent;
+use App\Jobs\ProcessInvoiceJob;
 use App\Models\Invoice;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -12,6 +13,13 @@ use Throwable;
 
 class InvoiceExtractionService
 {
+    public function retry(Invoice $invoice): void
+    {
+        $invoice->update(['extraction_status' => 'pending', 'extracted_data' => null]);
+
+        ProcessInvoiceJob::dispatch($invoice);
+    }
+
     public function extract(Invoice $invoice): void
     {
         $invoice->update(['extraction_status' => 'processing']);

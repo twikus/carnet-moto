@@ -29,6 +29,12 @@ class InvoiceStorageService
         ]);
     }
 
+    public function delete(Invoice $invoice): void
+    {
+        Storage::disk('local')->delete($invoice->path);
+        $invoice->delete();
+    }
+
     private function compress(string $originalPath): string
     {
         $absolutePath = Storage::disk('local')->path($originalPath);
