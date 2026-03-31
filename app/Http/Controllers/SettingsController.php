@@ -33,30 +33,30 @@ class SettingsController extends Controller
 
     public function updateMotorcycle(UpdateMotorcycleRequest $request)
     {
-        $motorcycle = Motorcycle::first();
-        $this->motorcycleService->update($motorcycle, $request->validated(), $request->file('photo'));
+        $this->motorcycleService->update(Motorcycle::first(), $request->validated(), $request->file('photo'));
 
         return back()->with('success', 'Informations de la moto mises à jour.');
     }
 
     public function updateDiscord(UpdateDiscordRequest $request)
     {
-        Motorcycle::first()->update([
-            'discord_webhook_url' => $request->discord_webhook_url,
-        ]);
+        $this->motorcycleService->updateDiscordWebhook(Motorcycle::first(), $request->discord_webhook_url);
 
         return back()->with('success', 'Webhook Discord mis à jour.');
     }
 
     public function testDiscord()
     {
-        $url = Motorcycle::first()->discord_webhook_url;
+        $motorcycle = Motorcycle::first();
 
-        if (!$url) {
+        if (!$motorcycle->discord_webhook_url) {
             return back()->with('error', 'Aucun webhook Discord configuré.');
         }
 
-        $ok = $this->discordService->send($url, '✅ Test webhook Carnet Moto — la connexion fonctionne !');
+        $ok = $this->discordService->send(
+            $motorcycle->discord_webhook_url,
+            '✅ Test webhook Carnet Moto — la connexion fonctionne !'
+        );
 
         return $ok
             ? back()->with('success', 'Message de test envoyé sur Discord.')
