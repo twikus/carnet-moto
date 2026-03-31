@@ -125,7 +125,7 @@ const form = useForm({
     total_amount: data.total_amount ?? '',
     notes:        '',
     items:        data.items?.length
-        ? data.items.map(i => ({ label: i.label, amount: i.amount ?? '' }))
+        ? data.items.map(i => ({ label: i.label, amount: i.amount ?? i.montant_ttc ?? '' }))
         : [{ label: '', amount: '' }],
 })
 
