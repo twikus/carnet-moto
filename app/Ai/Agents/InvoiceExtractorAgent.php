@@ -3,10 +3,14 @@
 namespace App\Ai\Agents;
 
 use Illuminate\Contracts\JsonSchema\JsonSchema;
+use Laravel\Ai\Attributes\Model;
+use Laravel\Ai\Attributes\Provider;
 use Laravel\Ai\Contracts\Agent;
 use Laravel\Ai\Contracts\HasStructuredOutput;
 use Laravel\Ai\Promptable;
 
+#[Provider('anthropic')]
+#[Model('claude-haiku-4-5')]
 class InvoiceExtractorAgent implements Agent, HasStructuredOutput
 {
     use Promptable;
