@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Invoice;
+use App\Services\InvoiceExtractionService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 
@@ -12,8 +13,8 @@ class ProcessInvoiceJob implements ShouldQueue
 
     public function __construct(public readonly Invoice $invoice) {}
 
-    public function handle(): void
+    public function handle(InvoiceExtractionService $extractionService): void
     {
-        // Extraction IA implémentée en SCRUM-11
+        $extractionService->extract($this->invoice);
     }
 }
