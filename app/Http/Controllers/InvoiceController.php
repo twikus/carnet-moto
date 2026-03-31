@@ -10,6 +10,7 @@ use App\Models\Motorcycle;
 use App\Services\InvoiceExtractionService;
 use App\Services\InvoiceStorageService;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -75,11 +76,9 @@ class InvoiceController extends Controller
         return redirect()->route('invoice.index');
     }
 
-    public function image(Invoice $invoice): \Illuminate\Http\Response
+    public function image(Invoice $invoice): \Symfony\Component\HttpFoundation\StreamedResponse
     {
-        $path = Storage::disk('local')->path($invoice->path);
-
-        return response()->file($path, ['Content-Type' => 'image/jpeg']);
+        return Storage::disk('local')->response($invoice->path, null, ['Content-Type' => 'image/jpeg']);
     }
 
     public function review(Invoice $invoice): Response
