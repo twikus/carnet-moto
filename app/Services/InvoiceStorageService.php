@@ -11,7 +11,7 @@ class InvoiceStorageService
     public function store(UploadedFile $file, Motorcycle $motorcycle): Invoice
     {
         $directory = 'invoices/' . $motorcycle->id;
-        $path = $file->store($directory, 'private');
+        $path = $file->store($directory, 'local');
 
         return Invoice::create([
             'path'              => $path,

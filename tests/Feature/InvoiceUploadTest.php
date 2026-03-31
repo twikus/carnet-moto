@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 
 beforeEach(function () {
-    Storage::fake('private');
+    Storage::fake('local');
     Queue::fake();
 });
 
@@ -38,7 +38,7 @@ test('une photo JPG valide peut être uploadée', function () {
     expect($invoice->extraction_status)->toBe('pending');
     expect($invoice->maintenance_id)->toBeNull();
 
-    Storage::disk('private')->assertExists($invoice->path);
+    Storage::disk('local')->assertExists($invoice->path);
 });
 
 test('après upload la redirection pointe vers la page processing', function () {
