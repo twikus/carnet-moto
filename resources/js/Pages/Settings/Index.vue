@@ -11,11 +11,15 @@
         </div>
 
         <!-- Flash messages -->
-        <div v-if="$page.props.flash?.success" class="mx-4 mt-4 max-w-2xl mx-auto bg-green-50 border border-green-200 text-green-800 text-sm rounded-xl px-4 py-3">
-            {{ $page.props.flash.success }}
+        <div v-if="$page.props.flash?.success" class="max-w-2xl mx-auto px-4 mt-4">
+            <div class="bg-green-50 border border-green-200 text-green-800 text-sm rounded-xl px-4 py-3">
+                {{ $page.props.flash.success }}
+            </div>
         </div>
-        <div v-if="$page.props.flash?.error" class="mx-4 mt-4 max-w-2xl mx-auto bg-red-50 border border-red-200 text-red-800 text-sm rounded-xl px-4 py-3">
-            {{ $page.props.flash.error }}
+        <div v-if="$page.props.flash?.error" class="max-w-2xl mx-auto px-4 mt-4">
+            <div class="bg-red-50 border border-red-200 text-red-800 text-sm rounded-xl px-4 py-3">
+                {{ $page.props.flash.error }}
+            </div>
         </div>
 
         <div class="px-4 mt-6 space-y-6 max-w-2xl mx-auto">

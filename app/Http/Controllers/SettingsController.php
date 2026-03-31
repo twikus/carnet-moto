@@ -21,7 +21,7 @@ class SettingsController extends Controller
     {
         $motorcycle = Motorcycle::first();
 
-        $apiKey    = config('services.anthropic.key') ?? env('ANTHROPIC_API_KEY', '');
+        $apiKey    = config('ai.providers.anthropic.key');
         $maskedKey = $apiKey ? substr($apiKey, 0, 10) . '...' . substr($apiKey, -4) : null;
 
         return Inertia::render('Settings/Index', [
