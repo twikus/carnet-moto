@@ -14,7 +14,7 @@ class StoreInvoiceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'photo' => ['required', 'file', 'mimes:jpg,jpeg,png', 'max:10240'],
+            'photo' => ['required', 'file', 'mimes:jpg,jpeg,png', 'max:9766'],
         ];
     }
 

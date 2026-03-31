@@ -95,7 +95,8 @@ test('un fichier PDF est refusé', function () {
 test('un fichier de plus de 10 Mo est refusé', function () {
     Motorcycle::factory()->create();
 
-    $file = UploadedFile::fake()->image('facture.jpg')->size(11000);
+    // 10 000 Ko = ~10,24 Mo décimaux, au-dessus de la limite de 9 766 Ko (~10 Mo décimaux)
+    $file = UploadedFile::fake()->image('facture.jpg')->size(10000);
 
     $this->actingAs(User::factory()->create())
         ->post(route('invoice.store'), ['photo' => $file])
