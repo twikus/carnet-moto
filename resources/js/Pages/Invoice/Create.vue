@@ -28,7 +28,7 @@
                     </button>
                 </div>
 
-                <label v-if="!preview"
+                <label v-if="!preview" for="photo-input"
                     class="flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-xl p-8 cursor-pointer hover:border-orange-300 hover:bg-orange-50 transition-colors"
                     :class="{ 'border-red-400 bg-red-50': form.errors.photo }">
                     <svg class="w-10 h-10 text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -37,9 +37,11 @@
                     </svg>
                     <span class="text-sm font-medium text-gray-600 mb-1">Appuyer pour prendre une photo</span>
                     <span class="text-xs text-gray-400">JPG ou PNG · max 10 Mo</span>
-                    <input ref="fileInput" type="file" accept="image/jpeg,image/png" capture="environment"
-                        class="hidden" @change="onFileChange" />
                 </label>
+
+                <!-- Input unique toujours présent dans le DOM -->
+                <input id="photo-input" ref="fileInput" type="file" accept="image/jpeg,image/png" capture="environment"
+                    class="hidden" @change="onFileChange" />
 
                 <p v-if="form.errors.photo" class="text-xs text-red-500 mt-2">{{ form.errors.photo }}</p>
 
@@ -48,8 +50,6 @@
                     class="mt-3 w-full text-sm text-gray-500 hover:text-gray-700 border border-gray-200 rounded-lg py-2 transition-colors">
                     Changer la photo
                 </button>
-                <input v-if="preview" ref="fileInput" type="file" accept="image/jpeg,image/png" capture="environment"
-                    class="hidden" @change="onFileChange" />
             </div>
 
             <!-- Info extraction IA -->

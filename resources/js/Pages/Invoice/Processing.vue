@@ -20,16 +20,18 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { onMounted, onUnmounted } from 'vue'
 import { router } from '@inertiajs/vue3'
 
 const props = defineProps({
     invoice: Object,
 })
 
+let interval = null
+
 onMounted(() => {
     // Polling toutes les 2s pour vérifier le statut (implémenté en SCRUM-11)
-    const interval = setInterval(() => {
+    interval = setInterval(() => {
         router.reload({ only: ['invoice'], onSuccess: () => {
             if (props.invoice.extraction_status === 'done' || props.invoice.extraction_status === 'failed') {
                 clearInterval(interval)
@@ -37,5 +39,9 @@ onMounted(() => {
             }
         }})
     }, 2000)
+})
+
+onUnmounted(() => {
+    clearInterval(interval)
 })
 </script>

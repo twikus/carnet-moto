@@ -41,6 +41,16 @@ test('une photo JPG valide peut être uploadée', function () {
     Storage::disk('private')->assertExists($invoice->path);
 });
 
+test('après upload la redirection pointe vers la page processing', function () {
+    Motorcycle::factory()->create();
+
+    $file = UploadedFile::fake()->image('facture.jpg');
+
+    $this->actingAs(User::factory()->create())
+        ->post(route('invoice.store'), ['photo' => $file])
+        ->assertRedirect(route('invoice.processing', Invoice::first()));
+});
+
 test('une photo PNG valide peut être uploadée', function () {
     Motorcycle::factory()->create();
 
