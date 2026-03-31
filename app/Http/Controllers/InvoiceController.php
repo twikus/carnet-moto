@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ConfirmInvoiceRequest;
 use App\Http\Requests\StoreInvoiceRequest;
 use App\Jobs\ProcessInvoiceJob;
 use App\Models\Invoice;
 use App\Models\Motorcycle;
 use App\Services\InvoiceExtractionService;
 use App\Services\InvoiceStorageService;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -73,11 +75,24 @@ class InvoiceController extends Controller
         return redirect()->route('invoice.index');
     }
 
+    public function image(Invoice $invoice): \Illuminate\Http\Response
+    {
+        $path = Storage::disk('local')->path($invoice->path);
+
+        return response()->file($path, ['Content-Type' => 'image/jpeg']);
+    }
+
     public function review(Invoice $invoice): Response
     {
-        // Formulaire de correction implémenté en SCRUM-12
         return Inertia::render('Invoice/Review', [
             'invoice' => $invoice->only('id', 'extraction_status', 'extracted_data', 'original_filename'),
         ]);
+    }
+
+    public function confirm(ConfirmInvoiceRequest $request, Invoice $invoice): \Illuminate\Http\RedirectResponse
+    {
+        $maintenance = $this->extractionService->confirm($invoice, $request->validated());
+
+        return redirect()->route('maintenance.show', $maintenance);
     }
 }

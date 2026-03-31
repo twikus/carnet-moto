@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Ai\Agents\InvoiceExtractorAgent;
 use App\Jobs\ProcessInvoiceJob;
 use App\Models\Invoice;
+use App\Models\Maintenance;
+use App\Models\Motorcycle;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Ai\Files\LocalImage;
@@ -13,6 +15,31 @@ use Throwable;
 
 class InvoiceExtractionService
 {
+    public function confirm(Invoice $invoice, array $data): Maintenance
+    {
+        $motorcycle = Motorcycle::first();
+
+        $maintenance = Maintenance::create([
+            'motorcycle_id' => $motorcycle->id,
+            'performed_at'  => $data['performed_at'],
+            'mileage'       => $data['mileage'],
+            'garage'        => $data['garage'] ?? null,
+            'total_amount'  => $data['total_amount'] ?? null,
+            'notes'         => $data['notes'] ?? null,
+        ]);
+
+        foreach ($data['items'] as $item) {
+            $maintenance->maintenanceItems()->create([
+                'label'  => $item['label'],
+                'amount' => $item['amount'] ?? null,
+            ]);
+        }
+
+        $invoice->update(['maintenance_id' => $maintenance->id]);
+
+        return $maintenance;
+    }
+
     public function retry(Invoice $invoice): void
     {
         $invoice->update(['extraction_status' => 'pending', 'extracted_data' => null]);

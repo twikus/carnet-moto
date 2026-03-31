@@ -10,7 +10,7 @@ use Laravel\Ai\Contracts\HasStructuredOutput;
 use Laravel\Ai\Promptable;
 
 #[Provider('anthropic')]
-#[Model('claude-haiku-4-5')]
+#[Model('claude-sonnet-4-6')]
 class InvoiceExtractorAgent implements Agent, HasStructuredOutput
 {
     use Promptable;
