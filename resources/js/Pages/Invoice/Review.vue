@@ -13,7 +13,7 @@
         <div class="px-4 mt-6 max-w-2xl mx-auto space-y-4">
             <!-- Image de la facture -->
             <div class="bg-white rounded-xl shadow overflow-hidden">
-                <img :src="route('invoice.image', invoice.id)" :alt="invoice.original_filename"
+                <img :src="invoice.image_url" :alt="invoice.original_filename"
                     class="w-full object-contain max-h-72" />
             </div>
 

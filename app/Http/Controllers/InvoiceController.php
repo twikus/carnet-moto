@@ -84,7 +84,10 @@ class InvoiceController extends Controller
     public function review(Invoice $invoice): Response
     {
         return Inertia::render('Invoice/Review', [
-            'invoice' => $invoice->only('id', 'extraction_status', 'extracted_data', 'original_filename'),
+            'invoice' => [
+                ...$invoice->only('id', 'extraction_status', 'extracted_data', 'original_filename'),
+                'image_url' => route('invoice.image', $invoice),
+            ],
         ]);
     }
 
