@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use App\Models\Invoice;
-use App\Models\Maintenance;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,9 +15,10 @@ class InvoiceFactory extends Factory
     public function definition(): array
     {
         return [
-            'maintenance_id'    => Maintenance::factory(),
-            'file_path'         => 'invoices/' . $this->faker->uuid() . '.jpg',
+            'maintenance_id'    => null,
+            'path'              => 'invoices/' . $this->faker->uuid() . '.jpg',
             'original_filename' => $this->faker->word() . '.jpg',
+            'sort_order'        => 0,
             'extraction_status' => 'pending',
             'extracted_data'    => null,
         ];

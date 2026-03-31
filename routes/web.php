@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\MaintenanceTypeController;
 use App\Http\Controllers\MotorcycleController;
@@ -28,6 +29,11 @@ Route::middleware('auth')->group(function () {
     // Routes protégées : nécessitent une moto configurée
     Route::middleware(EnsureMotorcycleExists::class)->group(function () {
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+
+        // Factures
+        Route::get('/invoices/create', [InvoiceController::class, 'create'])->name('invoice.create');
+        Route::post('/invoices', [InvoiceController::class, 'store'])->name('invoice.store');
+        Route::get('/invoices/{invoice}/processing', [InvoiceController::class, 'processing'])->name('invoice.processing');
 
         Route::get('/maintenances', [MaintenanceController::class, 'index'])->name('maintenance.index');
         Route::get('/maintenances/create', [MaintenanceController::class, 'create'])->name('maintenance.create');

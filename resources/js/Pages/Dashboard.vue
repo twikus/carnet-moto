@@ -70,22 +70,32 @@
 
             <!-- Raccourcis -->
             <div class="grid grid-cols-2 gap-3">
-                <a :href="route('maintenance.create')"
+                <a :href="route('invoice.create')"
                     class="bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 px-4 rounded-xl text-sm transition-colors flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    Importer une facture
+                </a>
+                <a :href="route('maintenance.create')"
+                    class="bg-white hover:bg-gray-50 text-gray-700 font-medium py-3 px-4 rounded-xl text-sm border border-gray-200 transition-colors flex items-center justify-center gap-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>
-                    Ajouter une intervention
-                </a>
-                <a :href="route('maintenance.index')"
-                    class="bg-white hover:bg-gray-50 text-gray-700 font-medium py-3 px-4 rounded-xl text-sm border border-gray-200 transition-colors flex items-center justify-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                    </svg>
-                    Voir l'historique
+                    Saisie manuelle
                 </a>
             </div>
+            <a :href="route('maintenance.index')"
+                class="bg-white hover:bg-gray-50 text-gray-700 font-medium py-3 px-4 rounded-xl text-sm border border-gray-200 transition-colors flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+                Voir l'historique
+            </a>
 
             <!-- Widget entretiens à venir -->
             <div class="bg-white rounded-xl shadow p-5">
