@@ -14,7 +14,7 @@ class StoreInvoiceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'photo' => ['required', 'file', 'mimes:jpg,jpeg,png', 'max:9766'],
+            'photo' => ['required', 'file', 'mimes:jpg,jpeg,png'],
         ];
     }
 
@@ -23,7 +23,6 @@ class StoreInvoiceRequest extends FormRequest
         return [
             'photo.required' => 'Veuillez sélectionner une photo.',
             'photo.mimes'    => 'Le fichier doit être au format JPG ou PNG.',
-            'photo.max'      => 'La photo ne doit pas dépasser 10 Mo.',
         ];
     }
 }

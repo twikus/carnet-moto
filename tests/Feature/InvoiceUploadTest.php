@@ -25,7 +25,7 @@ test('la page upload est accessible', function () {
 
 // Upload
 test('une photo JPG valide peut être uploadée', function () {
-    $motorcycle = Motorcycle::factory()->create();
+    Motorcycle::factory()->create();
 
     $file = UploadedFile::fake()->image('facture.jpg', 800, 600);
 
@@ -41,6 +41,19 @@ test('une photo JPG valide peut être uploadée', function () {
     Storage::disk('local')->assertExists($invoice->path);
 });
 
+test('une photo PNG est convertie en JPG après compression', function () {
+    Motorcycle::factory()->create();
+
+    $file = UploadedFile::fake()->image('facture.png', 800, 600);
+
+    $this->actingAs(User::factory()->create())
+        ->post(route('invoice.store'), ['photo' => $file]);
+
+    $invoice = Invoice::first();
+    expect($invoice->path)->toEndWith('.jpg');
+    Storage::disk('local')->assertExists($invoice->path);
+});
+
 test('après upload la redirection pointe vers la page processing', function () {
     Motorcycle::factory()->create();
 
@@ -49,18 +62,6 @@ test('après upload la redirection pointe vers la page processing', function () 
     $this->actingAs(User::factory()->create())
         ->post(route('invoice.store'), ['photo' => $file])
         ->assertRedirect(route('invoice.processing', Invoice::first()));
-});
-
-test('une photo PNG valide peut être uploadée', function () {
-    Motorcycle::factory()->create();
-
-    $file = UploadedFile::fake()->image('facture.png', 800, 600);
-
-    $this->actingAs(User::factory()->create())
-        ->post(route('invoice.store'), ['photo' => $file])
-        ->assertRedirect();
-
-    expect(Invoice::count())->toBe(1);
 });
 
 test('le job ProcessInvoiceJob est dispatché après upload', function () {
@@ -86,17 +87,6 @@ test('un fichier PDF est refusé', function () {
     Motorcycle::factory()->create();
 
     $file = UploadedFile::fake()->create('facture.pdf', 100, 'application/pdf');
-
-    $this->actingAs(User::factory()->create())
-        ->post(route('invoice.store'), ['photo' => $file])
-        ->assertSessionHasErrors(['photo']);
-});
-
-test('un fichier de plus de 10 Mo est refusé', function () {
-    Motorcycle::factory()->create();
-
-    // 10 000 Ko = ~10,24 Mo décimaux, au-dessus de la limite de 9 766 Ko (~10 Mo décimaux)
-    $file = UploadedFile::fake()->image('facture.jpg')->size(10000);
 
     $this->actingAs(User::factory()->create())
         ->post(route('invoice.store'), ['photo' => $file])
