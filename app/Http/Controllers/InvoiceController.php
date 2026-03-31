@@ -36,4 +36,12 @@ class InvoiceController extends Controller
             'invoice' => $invoice->only('id', 'extraction_status'),
         ]);
     }
+
+    public function review(Invoice $invoice): Response
+    {
+        // Formulaire de correction implémenté en SCRUM-12
+        return Inertia::render('Invoice/Review', [
+            'invoice' => $invoice->only('id', 'extraction_status', 'extracted_data', 'original_filename'),
+        ]);
+    }
 }

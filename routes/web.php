@@ -34,6 +34,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/invoices/create', [InvoiceController::class, 'create'])->name('invoice.create');
         Route::post('/invoices', [InvoiceController::class, 'store'])->name('invoice.store');
         Route::get('/invoices/{invoice}/processing', [InvoiceController::class, 'processing'])->name('invoice.processing');
+        Route::get('/invoices/{invoice}/review', [InvoiceController::class, 'review'])->name('invoice.review');
 
         Route::get('/maintenances', [MaintenanceController::class, 'index'])->name('maintenance.index');
         Route::get('/maintenances/create', [MaintenanceController::class, 'create'])->name('maintenance.create');
