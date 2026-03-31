@@ -13,8 +13,9 @@ class Invoice extends Model
 
     protected $fillable = [
         'maintenance_id',
-        'file_path',
+        'path',
         'original_filename',
+        'sort_order',
         'extraction_status',
         'extracted_data',
     ];
