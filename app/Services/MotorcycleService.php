@@ -20,6 +20,11 @@ class MotorcycleService
         ]);
     }
 
+    public function updateDiscordWebhook(Motorcycle $motorcycle, ?string $url): void
+    {
+        $motorcycle->update(['discord_webhook_url' => $url]);
+    }
+
     public function update(Motorcycle $motorcycle, array $data, ?UploadedFile $photo): Motorcycle
     {
         if ($photo) {

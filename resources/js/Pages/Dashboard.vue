@@ -8,7 +8,7 @@
                     }}</p>
             </div>
             <div class="flex items-center gap-2">
-                <a :href="route('motorcycle.edit', motorcycle.id)"
+                <a :href="route('settings')"
                     class="text-sm text-gray-400 hover:text-gray-600 p-2">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
