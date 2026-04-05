@@ -17,7 +17,7 @@ class InvoiceStorageService
         $directory = 'invoices/' . $motorcycle->id;
 
         // Stockage temporaire de l'original
-        $originalPath = $file->store($directory, 'local');
+        $originalPath = $file->store($directory, 'public');
 
         // Compression et remplacement par un JPEG optimisé
         $compressedPath = $this->compress($originalPath);
@@ -31,13 +31,13 @@ class InvoiceStorageService
 
     public function delete(Invoice $invoice): void
     {
-        Storage::disk('local')->delete($invoice->path);
+        Storage::disk('public')->delete($invoice->path);
         $invoice->delete();
     }
 
     private function compress(string $originalPath): string
     {
-        $absolutePath = Storage::disk('local')->path($originalPath);
+        $absolutePath = Storage::disk('public')->path($originalPath);
 
         $manager = new ImageManager(new Driver());
         $image = $manager->decodePath($absolutePath);
@@ -47,13 +47,13 @@ class InvoiceStorageService
 
         // Sauvegarde en JPEG qualité 80
         $compressedPath = preg_replace('/\.[^.]+$/', '.jpg', $originalPath);
-        $absoluteCompressedPath = Storage::disk('local')->path($compressedPath);
+        $absoluteCompressedPath = Storage::disk('public')->path($compressedPath);
 
         $image->encode(new JpegEncoder(quality: 80))->save($absoluteCompressedPath);
 
         // Suppression de l'original si l'extension a changé (PNG → JPG)
         if ($originalPath !== $compressedPath) {
-            Storage::disk('local')->delete($originalPath);
+            Storage::disk('public')->delete($originalPath);
         }
 
         return $compressedPath;

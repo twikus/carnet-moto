@@ -35,7 +35,7 @@ class InvoiceExtractionService
             ]);
         }
 
-        $invoice->update(['maintenance_id' => $maintenance->id]);
+        $invoice->update(['maintenance_id' => $maintenance->id, 'is_validated' => true]);
 
         return $maintenance;
     }
@@ -52,7 +52,7 @@ class InvoiceExtractionService
         $invoice->update(['extraction_status' => 'processing']);
 
         try {
-            $absolutePath = Storage::disk('local')->path($invoice->path);
+            $absolutePath = Storage::disk('public')->path($invoice->path);
             $image = new LocalImage($absolutePath, 'image/jpeg');
 
             /** @var StructuredAgentResponse $response */

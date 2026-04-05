@@ -10,7 +10,6 @@ use App\Models\Motorcycle;
 use App\Services\InvoiceExtractionService;
 use App\Services\InvoiceStorageService;
 use Illuminate\Support\Facades\Storage;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -23,10 +22,11 @@ class InvoiceController extends Controller
 
     public function index(): Response
     {
-        $invoices = Invoice::orderByDesc('created_at')->get()->map(fn (Invoice $invoice) => [
+        $invoices = Invoice::orderByDesc('created_at')->get()->map(fn(Invoice $invoice) => [
             'id'                => $invoice->id,
             'original_filename' => $invoice->original_filename,
             'extraction_status' => $invoice->extraction_status,
+            'is_validated'      => $invoice->is_validated,
             'created_at'        => $invoice->created_at->toDateTimeString(),
             'summary'           => $invoice->extraction_status === 'done' ? [
                 'performed_at' => $invoice->extracted_data['performed_at'] ?? null,
@@ -78,7 +78,7 @@ class InvoiceController extends Controller
 
     public function image(Invoice $invoice): \Symfony\Component\HttpFoundation\StreamedResponse
     {
-        return Storage::disk('local')->response($invoice->path, null, ['Content-Type' => 'image/jpeg']);
+        return Storage::disk('public')->response($invoice->path, null, ['Content-Type' => 'image/jpeg']);
     }
 
     public function review(Invoice $invoice): Response

@@ -18,14 +18,12 @@
 
         <div class="px-4 mt-6 space-y-3 max-w-2xl mx-auto">
             <!-- Liste vide -->
-            <div v-if="invoices.length === 0"
-                class="bg-white rounded-xl shadow p-8 text-center text-sm text-gray-400">
+            <div v-if="invoices.length === 0" class="bg-white rounded-xl shadow p-8 text-center text-sm text-gray-400">
                 Aucun import pour le moment.
             </div>
 
             <!-- Cards -->
-            <div v-for="invoice in invoices" :key="invoice.id"
-                class="bg-white rounded-xl shadow p-4">
+            <div v-for="invoice in invoices" :key="invoice.id" class="bg-white rounded-xl shadow p-4">
                 <div class="flex items-start justify-between gap-3">
                     <!-- Infos -->
                     <div class="min-w-0">
@@ -49,9 +47,13 @@
                             {{ statusLabel(invoice.extraction_status) }}
                         </span>
 
+                        <span v-if="invoice.is_validated"
+                            class="text-xs font-medium px-2 py-1 rounded-full bg-blue-100 text-blue-500">
+                            Validé
+                        </span>
+
                         <!-- Badge confiance -->
-                        <span v-if="invoice.summary?.confidence"
-                            class="text-xs px-2 py-0.5 rounded-full"
+                        <span v-if="invoice.summary?.confidence" class="text-xs px-2 py-0.5 rounded-full"
                             :class="confidenceClass(invoice.summary.confidence)">
                             {{ confidenceLabel(invoice.summary.confidence) }}
                         </span>
@@ -61,23 +63,21 @@
                 <!-- Actions -->
                 <div class="flex gap-2 mt-3 pt-3 border-t border-gray-100">
                     <!-- Voir (done) -->
-                    <a v-if="invoice.extraction_status === 'done'"
+                    <a v-if="invoice.extraction_status === 'done' && !invoice.is_validated"
                         :href="route('invoice.review', invoice.id)"
                         class="flex-1 text-center text-xs font-medium text-orange-600 border border-orange-200 rounded-lg py-1.5 hover:bg-orange-50 transition-colors">
                         Voir / Valider
                     </a>
 
                     <!-- Relancer (failed ou pending bloqué) -->
-                    <button v-if="invoice.extraction_status === 'failed'"
-                        type="button" @click="retry(invoice)"
+                    <button v-if="invoice.extraction_status === 'failed'" type="button" @click="retry(invoice)"
                         :disabled="retryingId === invoice.id"
                         class="flex-1 text-xs font-medium text-blue-600 border border-blue-200 rounded-lg py-1.5 hover:bg-blue-50 disabled:opacity-50 transition-colors">
                         {{ retryingId === invoice.id ? 'Relance…' : 'Relancer' }}
                     </button>
 
                     <!-- Supprimer -->
-                    <button type="button" @click="destroy(invoice)"
-                        :disabled="deletingId === invoice.id"
+                    <button type="button" @click="destroy(invoice)" :disabled="deletingId === invoice.id"
                         class="flex-1 text-xs font-medium text-red-500 border border-red-200 rounded-lg py-1.5 hover:bg-red-50 disabled:opacity-50 transition-colors">
                         {{ deletingId === invoice.id ? 'Suppression…' : 'Supprimer' }}
                     </button>
@@ -125,10 +125,10 @@ function statusLabel(status) {
 
 function statusClass(status) {
     return {
-        pending:    'bg-gray-100 text-gray-500',
+        pending: 'bg-gray-100 text-gray-500',
         processing: 'bg-yellow-100 text-yellow-700',
-        done:       'bg-green-100 text-green-700',
-        failed:     'bg-red-100 text-red-600',
+        done: 'bg-green-100 text-green-700',
+        failed: 'bg-red-100 text-red-600',
     }[status] ?? 'bg-gray-100 text-gray-500'
 }
 
@@ -138,9 +138,9 @@ function confidenceLabel(c) {
 
 function confidenceClass(c) {
     return {
-        high:   'bg-green-50 text-green-600',
+        high: 'bg-green-50 text-green-600',
         medium: 'bg-yellow-50 text-yellow-600',
-        low:    'bg-red-50 text-red-500',
+        low: 'bg-red-50 text-red-500',
     }[c] ?? ''
 }
 </script>

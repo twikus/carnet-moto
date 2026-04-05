@@ -28,11 +28,14 @@
                 <div class="flex justify-between">
                     <div>
                         <p class="text-xs text-gray-400 uppercase tracking-wide">Date</p>
-                        <p class="text-sm font-semibold text-gray-900 mt-0.5">{{ formatDate(maintenance.performed_at) }}</p>
+                        <p class="text-sm font-semibold text-gray-900 mt-0.5">{{ formatDate(maintenance.performed_at) }}
+                        </p>
                     </div>
                     <div class="text-right">
                         <p class="text-xs text-gray-400 uppercase tracking-wide">Kilométrage</p>
-                        <p class="text-sm font-semibold text-gray-900 mt-0.5">{{ maintenance.mileage.toLocaleString('fr-FR') }} km</p>
+                        <p class="text-sm font-semibold text-gray-900 mt-0.5">{{
+                            maintenance.mileage ? maintenance.mileage.toLocaleString('fr-FR') + ' km' : 'Non renseigné'
+                        }}</p>
                     </div>
                 </div>
 
@@ -69,9 +72,9 @@
             <div v-if="maintenance.invoices && maintenance.invoices.length > 0" class="bg-white rounded-xl shadow p-5">
                 <p class="text-xs text-gray-400 uppercase tracking-wide mb-3">Factures</p>
                 <div class="grid grid-cols-2 gap-2">
-                    <a v-for="invoice in maintenance.invoices" :key="invoice.id"
-                        :href="'/storage/' + invoice.file_path" target="_blank">
-                        <img :src="'/storage/' + invoice.file_path"
+                    <a v-for="invoice in maintenance.invoices" :key="invoice.id" :href="'/storage/' + invoice.path"
+                        target="_blank">
+                        <img :src="'/storage/' + invoice.path"
                             class="w-full h-32 object-cover rounded-lg border border-gray-100" />
                     </a>
                 </div>
@@ -79,8 +82,7 @@
         </div>
 
         <!-- Modal confirmation suppression -->
-        <div v-if="showDeleteModal"
-            class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div v-if="showDeleteModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
             <div class="bg-white rounded-2xl p-6 w-full max-w-sm">
                 <h2 class="text-base font-bold text-gray-900 mb-2">Supprimer l'intervention ?</h2>
                 <p class="text-sm text-gray-500 mb-5">Cette action est irréversible.</p>

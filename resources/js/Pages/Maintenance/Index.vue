@@ -45,12 +45,16 @@
                                 {{ formatDate(maintenance.performed_at) }}
                             </p>
                             <p class="text-xs text-gray-400 mt-0.5">
-                                {{ maintenance.mileage.toLocaleString('fr-FR') }} km
+                                {{ maintenance.mileage ?
+                                    `${maintenance.mileage.toLocaleString('fr-FR')} km` :
+                                    'Pas de km renseigné'
+                                }}
                                 <span v-if="maintenance.garage"> · {{ maintenance.garage }}</span>
                             </p>
                         </div>
                         <div class="text-right">
-                            <p v-if="totalAmount(maintenance.maintenance_items)" class="text-sm font-semibold text-gray-900">
+                            <p v-if="totalAmount(maintenance.maintenance_items)"
+                                class="text-sm font-semibold text-gray-900">
                                 {{ totalAmount(maintenance.maintenance_items) }} €
                             </p>
                         </div>
