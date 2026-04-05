@@ -10,9 +10,9 @@ use App\Services\InvoiceExtractionService;
 use Illuminate\Support\Facades\Storage;
 
 beforeEach(function () {
-    Storage::fake('local');
+    Storage::fake('public');
     // Créer un fichier image factice pour les tests
-    Storage::disk('local')->put('invoices/test/facture.jpg', 'fake-image-content');
+    Storage::disk('public')->put('invoices/test/facture.jpg', 'fake-image-content');
 });
 
 $fakeExtraction = [
@@ -101,7 +101,7 @@ test('la page review est accessible quand l\'extraction est done', function () {
     $this->actingAs(User::factory()->create())
         ->get(route('invoice.review', $invoice))
         ->assertStatus(200)
-        ->assertInertia(fn ($page) => $page->component('Invoice/Review'));
+        ->assertInertia(fn($page) => $page->component('Invoice/Review'));
 });
 
 // Confirmation
@@ -147,7 +147,7 @@ test('la confirmation échoue sans les champs obligatoires', function () {
 
     $this->actingAs(User::factory()->create())
         ->post(route('invoice.confirm', $invoice), [])
-        ->assertSessionHasErrors(['performed_at', 'mileage', 'items']);
+        ->assertSessionHasErrors(['performed_at', 'items']);
 });
 
 test('la confirmation échoue si un item n\'a pas de label', function () {

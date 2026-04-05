@@ -37,7 +37,7 @@
                         <p v-if="errors.performed_at" class="text-xs text-red-500 mt-1">{{ errors.performed_at }}</p>
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1">Kilométrage *</label>
+                        <label class="block text-xs font-medium text-gray-500 mb-1">Kilométrage</label>
                         <input type="number" v-model="form.mileage" min="0"
                             class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
                             :class="{ 'border-red-400': errors.mileage }" />

@@ -19,7 +19,7 @@ class ConfirmInvoiceRequest extends FormRequest
 
         return [
             'performed_at'   => ['required', 'date'],
-            'mileage'        => ['required', 'integer', 'min:0', new MileageChronologyRule($motorcycle->maintenances())],
+            'mileage'        => ['nullable', 'integer', 'min:0', new MileageChronologyRule($motorcycle->maintenances())],
             'garage'         => ['nullable', 'string', 'max:255'],
             'total_amount'   => ['nullable', 'numeric', 'min:0'],
             'notes'          => ['nullable', 'string'],
