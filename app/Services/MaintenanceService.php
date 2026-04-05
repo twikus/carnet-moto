@@ -60,7 +60,7 @@ class MaintenanceService
     {
         DB::transaction(function () use ($maintenance) {
             foreach ($maintenance->invoices as $invoice) {
-                Storage::disk('public')->delete($invoice->file_path);
+                Storage::disk('public')->delete($invoice->path);
                 $invoice->delete();
             }
 

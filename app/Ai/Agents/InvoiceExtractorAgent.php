@@ -10,7 +10,7 @@ use Laravel\Ai\Contracts\HasStructuredOutput;
 use Laravel\Ai\Promptable;
 
 #[Provider('anthropic')]
-#[Model('claude-haiku-4-5')]
+#[Model('claude-sonnet-4-6')]
 class InvoiceExtractorAgent implements Agent, HasStructuredOutput
 {
     use Promptable;
@@ -26,7 +26,7 @@ class InvoiceExtractorAgent implements Agent, HasStructuredOutput
         - mileage : kilométrage du véhicule noté sur la facture (entier, sans unité). Null si absent.
         - garage : nom du garage ou de l'atelier. Null si absent.
         - total_amount : montant total TTC en euros (nombre décimal). Null si absent.
-        - items : liste des prestations et pièces détachées avec leur libellé et montant. Au moins un item si des prestations sont visibles.
+        - items : liste des prestations et pièces détachées. Chaque item doit avoir exactement deux champs : "label" (libellé) et "amount" (montant en euros, null si absent). N'utilise pas d'autres noms de champs (pas de "montant_ttc", "prix", etc.).
         - confidence : ton niveau de confiance global dans l'extraction (high = données claires, medium = quelques incertitudes, low = image floue ou données manquantes).
         INSTRUCTIONS;
     }

@@ -17,6 +17,7 @@ class Invoice extends Model
         'original_filename',
         'sort_order',
         'extraction_status',
+        'is_validated',
         'extracted_data',
     ];
 

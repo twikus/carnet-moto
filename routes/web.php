@@ -38,6 +38,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/invoices/{invoice}/retry', [InvoiceController::class, 'retry'])->name('invoice.retry');
         Route::delete('/invoices/{invoice}', [InvoiceController::class, 'destroy'])->name('invoice.destroy');
         Route::get('/invoices/{invoice}/review', [InvoiceController::class, 'review'])->name('invoice.review');
+        Route::post('/invoices/{invoice}/confirm', [InvoiceController::class, 'confirm'])->name('invoice.confirm');
+        Route::get('/invoices/{invoice}/image', [InvoiceController::class, 'image'])->name('invoice.image');
 
         Route::get('/maintenances', [MaintenanceController::class, 'index'])->name('maintenance.index');
         Route::get('/maintenances/create', [MaintenanceController::class, 'create'])->name('maintenance.create');

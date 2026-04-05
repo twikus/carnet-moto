@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 
 beforeEach(function () {
-    Storage::fake('local');
+    Storage::fake('public');
     Queue::fake();
 });
 
@@ -20,7 +20,7 @@ test('la page upload est accessible', function () {
     $this->actingAs(User::factory()->create())
         ->get(route('invoice.create'))
         ->assertStatus(200)
-        ->assertInertia(fn ($page) => $page->component('Invoice/Create'));
+        ->assertInertia(fn($page) => $page->component('Invoice/Create'));
 });
 
 // Upload
@@ -38,7 +38,7 @@ test('une photo JPG valide peut être uploadée', function () {
     expect($invoice->extraction_status)->toBe('pending');
     expect($invoice->maintenance_id)->toBeNull();
 
-    Storage::disk('local')->assertExists($invoice->path);
+    Storage::disk('public')->assertExists($invoice->path);
 });
 
 test('une photo PNG est convertie en JPG après compression', function () {
@@ -51,7 +51,7 @@ test('une photo PNG est convertie en JPG après compression', function () {
 
     $invoice = Invoice::first();
     expect($invoice->path)->toEndWith('.jpg');
-    Storage::disk('local')->assertExists($invoice->path);
+    Storage::disk('public')->assertExists($invoice->path);
 });
 
 test('après upload la redirection pointe vers la page processing', function () {
@@ -101,5 +101,5 @@ test('la page processing est accessible', function () {
     $this->actingAs(User::factory()->create())
         ->get(route('invoice.processing', $invoice))
         ->assertStatus(200)
-        ->assertInertia(fn ($page) => $page->component('Invoice/Processing'));
+        ->assertInertia(fn($page) => $page->component('Invoice/Processing'));
 });

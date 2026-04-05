@@ -3,15 +3,16 @@
 use App\Ai\Agents\InvoiceExtractorAgent;
 use App\Jobs\ProcessInvoiceJob;
 use App\Models\Invoice;
+use App\Models\Maintenance;
 use App\Models\Motorcycle;
 use App\Models\User;
 use App\Services\InvoiceExtractionService;
 use Illuminate\Support\Facades\Storage;
 
 beforeEach(function () {
-    Storage::fake('local');
+    Storage::fake('public');
     // Créer un fichier image factice pour les tests
-    Storage::disk('local')->put('invoices/test/facture.jpg', 'fake-image-content');
+    Storage::disk('public')->put('invoices/test/facture.jpg', 'fake-image-content');
 });
 
 $fakeExtraction = [
@@ -100,5 +101,68 @@ test('la page review est accessible quand l\'extraction est done', function () {
     $this->actingAs(User::factory()->create())
         ->get(route('invoice.review', $invoice))
         ->assertStatus(200)
-        ->assertInertia(fn ($page) => $page->component('Invoice/Review'));
+        ->assertInertia(fn($page) => $page->component('Invoice/Review'));
+});
+
+// Confirmation
+test('la confirmation crée une maintenance avec ses items et lie la facture', function () {
+    $motorcycle = Motorcycle::factory()->create();
+
+    $invoice = Invoice::factory()->create([
+        'extraction_status' => 'done',
+        'extracted_data'    => [],
+    ]);
+
+    $this->actingAs(User::factory()->create())
+        ->post(route('invoice.confirm', $invoice), [
+            'performed_at' => '2026-01-15',
+            'mileage'      => 12500,
+            'garage'       => 'Moto Shop Paris',
+            'total_amount' => 150.00,
+            'notes'        => 'RAS',
+            'items'        => [
+                ['label' => 'Vidange huile moteur', 'amount' => 120.00],
+                ['label' => 'Filtre à huile', 'amount' => 30.00],
+            ],
+        ])
+        ->assertRedirect();
+
+    $maintenance = Maintenance::first();
+    expect($maintenance)->not->toBeNull();
+    expect($maintenance->mileage)->toBe(12500);
+    expect($maintenance->garage)->toBe('Moto Shop Paris');
+    expect($maintenance->notes)->toBe('RAS');
+    expect($maintenance->maintenanceItems)->toHaveCount(2);
+
+    expect($invoice->fresh()->maintenance_id)->toBe($maintenance->id);
+});
+
+test('la confirmation échoue sans les champs obligatoires', function () {
+    Motorcycle::factory()->create();
+
+    $invoice = Invoice::factory()->create([
+        'extraction_status' => 'done',
+        'extracted_data'    => [],
+    ]);
+
+    $this->actingAs(User::factory()->create())
+        ->post(route('invoice.confirm', $invoice), [])
+        ->assertSessionHasErrors(['performed_at', 'items']);
+});
+
+test('la confirmation échoue si un item n\'a pas de label', function () {
+    Motorcycle::factory()->create();
+
+    $invoice = Invoice::factory()->create([
+        'extraction_status' => 'done',
+        'extracted_data'    => [],
+    ]);
+
+    $this->actingAs(User::factory()->create())
+        ->post(route('invoice.confirm', $invoice), [
+            'performed_at' => '2026-01-15',
+            'mileage'      => 12500,
+            'items'        => [['label' => '', 'amount' => null]],
+        ])
+        ->assertSessionHasErrors(['items.0.label']);
 });
